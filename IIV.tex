@@ -38,7 +38,7 @@
 \renewcommand{\bottomfraction}{0.9}
 \renewcommand{\floatpagefraction}{0.66}
 \setlength{\floatsep}{2.0pt plus 2.0pt minus 2.0pt}
-\setlength{\textfloatsep}{5.0pt plus 2.0pt minus 0.0pt}
+\setlength{\textfloatsep}{10.0pt plus 2.0pt minus 0.0pt}
 
 \begin{document}
 
@@ -63,10 +63,10 @@ Some country}
 \section{Introduction}
 \label{Introduction}
 
-Automated Reasoning (AR), and Automated Theorem Proving (ATP) in particular, has focused largely 
-on the task of proving theorems from axioms -- the derivation of conclusions that follow inevitably 
-from known facts \cite{RV01-HAR}.
-The axioms and conjecture to be proved (and hence become a theorem) are written in an 
+Historically, Automated Reasoning (AR), and Automated Theorem Proving (ATP) in particular, has 
+focused largely on the task of proving theorems from axioms -- the derivation of conclusions that 
+follow inevitably from known facts \cite{RV01-HAR}.
+The axioms and conjecture to be proved (to become a theorem) are written in an 
 appropriately expressive logic, and the proofs are often similarly written in logic \cite{SS+06}.
 In this work typed first-order logic is used.
 In the last two decades the converse task of disproving conjectures
@@ -80,7 +80,7 @@ A salient application area that harnesses this form of ATP is verification \cite
 % where a countermodel is used to pinpoint the reason why a proof obligation fails, and
 % correspondingly points to the location of the fault in the system being verified.
 This work describes an interactive interpretation viewer for interpretations written in the
-(new) TPTP format \cite{FLAIRS}.
+(new) TPTP format \cite{SS+22-FLAIRS}.
 
 % \paragraph{Related Work:}
 % Related work is sparse.
@@ -102,7 +102,7 @@ This work describes an interactive interpretation viewer for interpretations wri
 \label{TPTP}
 
 The TPTP World \cite{Sut17} is a well established infrastructure that supports research, 
-development, and deployment of Automated Theorem Proving (ATP) systems.
+development, and deployment of ATP systems.
 The TPTP language \cite{Sut22-IGPL} is 
 % one of the keys to the success of the TPTP World.
 % The language is 
@@ -114,9 +114,9 @@ An annotated formula has the form:\\
 {\em formula}{\tt ,}
 {\em source}{\tt ,}
 {\em useful\_info}{\tt )}\\
-The {\em language}s supported are {\smalltt{cnf}} (clause normal form), {\smalltt{fof}}
-(first-order form), {\smalltt{tff}} (typed first-order form), and {\smalltt{thf}}
-(typed higher-order form).
+The {\em language}s supported are {\smalltt{cnf}} (clause normal form), {\smalltt{tcf}} (typed
+clause normal form), {\smalltt{fof}} (first-order form), {\smalltt{tff}} (typed first-order form), 
+and {\smalltt{thf}} (typed higher-order form).
 The {\em role}, e.g., {\smalltt{axiom}}, {\smalltt{lemma}}, {\smalltt{conjecture}},
 defines the use of the formula in an ATP system.
 The {\em formula} follows Prolog conventions, and can
@@ -138,7 +138,7 @@ Figure~\ref{TF0FiniteProblem} is an example of a problem in monomorphic typed fi
 form (TF0).  
 % The associated (counter)model is discussed in Section~\ref{Interpretations}.
 
-\begin{figure}[tbhp]
+\begin{figure}[htbp]
 \scriptsize
 \setstretch{0.8}
 \begin{verbatim}
@@ -167,7 +167,7 @@ tff(jon_owns_garfields_lovers,conjecture,
 \end{verbatim}
 \caption{A TF0 problem (with a finite countermodel)
 % \\
-% {\scriptsize \url{https://raw.githubusercontent.com/GeoffsPapers/ModelVerification/main/TFF_Finite.p}}
+% {\scriptsize \url{https://raw.githubusercontent.com/GeoffsPapers/IIVPoster/main/TFF_Finite.p}}
 }
 \label{TF0FiniteProblem}
 \end{figure}
@@ -180,7 +180,8 @@ A Tarskian-style interpretation \cite{TV56} of formulae in typed first-order log
 non-empty domain of unequal elements for each type used in the formulae (just one domain for 
 untyped logic), and interpretations of the function and predicate symbols with respect to the 
 domains \cite{Hun96}.
-% The domains of an interpretation may be finite or infinite.
+The domains of an interpretation may be finite or infinite, but only finite domains are discussed
+in this work.
 % Interpretations with only finite domains are called {\em finite interpretations}, and
 % interpretations with one of more infinite domains are called {\em infinite interpretations}.
 % Finite domains are commonly explicitly enumerated, but can also take other forms, e.g., the 
@@ -190,7 +191,8 @@ domains \cite{Hun96}.
 % Peano numbers), and the infinite Herbrand Universe of a Herbrand interpretation.
 The TPTP representation of an interpretation uses an {\em interpretation formula}, preceded by 
 the necessary type declarations.
-{\em Type-promotion} functions are used to convert domain elements to terms.
+Type-promotion functions are used to convert domain elements to terms, in order to make the
+interpretation formula well-typed.
 %\begin{packed_itemize}
 %\item the type declarations for the formulae being interpreted;
 %\item the types of the domains (unless already defined in the language, e.g., the type
@@ -200,36 +202,39 @@ the necessary type declarations.
 %\item the types of the domain elements.
 %\end{packed_itemize}
 % \vspace*{-0.4em}
-The interpretation formula is a conjunction specifying: 
-\begin{packed_itemize}
-\item for each type in the formulae:
-      \begin{packed_itemize}
-      \item the domain type, by a formula that makes the type-promotion function a surjection;
-      \item the domain elements as a universally quantified disjunction of equalities whose 
-            right-hand sides are the domain elements;
-      \item specification of the distinctness of the domain elements;
-      \item a formula making the type-promotion function an injection,
-            which with the surjectivity makes it a bijection.
-      \end{packed_itemize}
-\item interpretation of the function symbols, as equalities whose left-hand sides are 
-      formed from symbols applied to type-promoted domain elements, and whose right-hand sides 
-      are type-promoted domain elements;
-\item interpretation of the predicate symbols, as literals formed from symbols applied
-      to type-promoted domain elements; positive literals are {\em true} and negative literals 
-      are {\em false}.
-\end{packed_itemize}
-This representation is also directly usable for untyped first-order logic, where all terms in 
-the given and interpretation formulae are of the same type – ``individuals''. 
-This obviates the need for type considerations, in particular type-promotion functions are not 
-needed.
-
+The interpretation formula is a conjunction providing details of the domains -
+their types and elements, and interpretation of the symbols applied to domain elements.
+% \begin{packed_itemize}
+% \item for each type in the formulae:
+%       \begin{packed_itemize}
+%       \item the domain type, by a formula that makes the type-promotion function a surjection;
+%       \item the domain elements as a universally quantified disjunction of equalities whose 
+%             right-hand sides are the domain elements;
+%       \item specification of the distinctness of the domain elements;
+%       \item a formula making the type-promotion function an injection,
+%             which with the surjectivity makes it a bijection.
+%       \end{packed_itemize}
+% \item interpretation of the function symbols, as equalities whose left-hand sides are 
+%       formed from symbols applied to type-promoted domain elements, and whose right-hand sides 
+%       are type-promoted domain elements;
+% \item interpretation of the predicate symbols, as literals formed from symbols applied
+%       to type-promoted domain elements; positive literals are {\em true} and negative literals 
+%       are {\em false}.
+% \end{packed_itemize}
+The representation is also directly usable for untyped first-order logic, where all terms 
+% in 
+% the given and interpretation formulae 
+are of the same type – ``individuals''. 
+% This obviates the need for type considerations, in particular type-promotion functions are not 
+% needed.
+% 
 Figure~\ref{TF0FiniteInterpretation} is a TF0 interpretation with finite domains -- it is a 
 countermodel for the problem in Figure~\ref{TF0FiniteProblem}.
-The type declarations have been omited, but can be seen in URL provided.
-The comments show which parts of the formula specify what aspects of the interpretation, per
-the list above.
+The type declarations have been omited, and can be seen in URL provided.
+% The comments show which parts of the formula specify what aspects of the interpretation, per
+% the list above.
 
-\begin{figure}[t!]
+\begin{figure}[htbp]
 \scriptsize
 \setstretch{0.8}
 \begin{verbatim}
@@ -257,7 +262,7 @@ tff(equality_lost,interpretation,
 %--------------------------------------------------------
 \end{verbatim}
 \caption{A TF0 interpretation with a finite domain \\
-{\scriptsize \url{https://raw.githubusercontent.com/GeoffsPapers/ModelVerification/main/TFF_Finite.s}}}
+{\scriptsize \url{https://raw.githubusercontent.com/GeoffsPapers/IIVPoster/main/TFF_Finite.s}}}
 \label{TF0FiniteInterpretation}
 \end{figure}
 
@@ -274,47 +279,42 @@ attention.
 % 
 A visualization for TF0 interpretations has been designed in this work, and an initial
 implementation is available as the IIV tool in the SystemOnTSTP web interface.
-IIV is built on top of IDV, and has benefited from the mature state of IDV.
-% IDV was originally a Java applet, but has since been ported to HTML/JavaScript using GraphViz
-% \cite{EG+02} for the layout and rendering.
-% IIV has benefited from the mature state of IDV.
 The implementation is ``initial'' because it is fully automated for only finite TF0
-interpretations; for infinite interpretations different components of the interpretation formula 
-have to be manually extracted into separate annotated formulae, to mimic a derivation that IDV 
-can render.
+interpretations.
+% ; for infinite interpretations different components of the interpretation formula 
+% have to be manually extracted into separate annotated formulae, to mimic a derivation that IDV 
+% can render.
 
 Figure~\ref{TF0FiniteIIV} is the visualization of the finite countermodel in 
-Figure~\ref{TF0FiniteInterpretation}, modified so that {\smalltt{john}} is not created equal 
-to the person who got an {\smalltt{A}}.
+Figure~\ref{TF0FiniteInterpretation}.
 The top row of inverted triangles are the types in the given formulae,
 while the bottom row of inverted triangles are the types of the domains in the interpretation
 formula.
 The inverted houses are the function and predicate symbols, and the successive rows of ovals are 
-the successive domain element arguments used to specify the symbols' interpretation.
+the successive domain element arguments used to specify the symbols' interpretations.
 Finally, the row of houses and boxes are the interpretations of the symbols applied to those
 arguments; houses for functions and boxes for predicates.
-For example, in the given formulae the type of {\smalltt{grade\_of}} is {\smalltt{grade}},
-and {\smalltt{grade\_of(d\_john)}} is interpreted as {\smalltt{d\_f}}, which is of type
-{\smalltt{d\_grade}} in the interpretation formula.
+Paths from leaf type nodes to root type nodes show the interpretation of symbols and the domain
+elements.
+For example, in the given formulae the type of {\smalltt{loves\_most}} is {\smalltt{cat}},
+and {\smalltt{loves\_most(d\_arlene)}} is interpreted as {\smalltt{d\_garfield}}, which is of type
+{\smalltt{d\_cat}} in the interpretation formula.
 
-IIV provides some interactive features: Figure~\ref{TF0FiniteIIV} shows the situation with 
-the cursor hovering over the lower {\smalltt{d\_john}} node on the path from 
-{\smalltt{created\_equal}} to {\smalltt{\$true}}, showing that
-{\smalltt{created\_equal(d\_john,d\_john)}} is interpreted as {\smalltt{\$true}}.
+IIV provides some interactive features: Figure~\ref{TF0FiniteIIV} shows the situation with the 
+cursor hovering over the {\smalltt{d\_garfield}} node on the path from {\smalltt{owns}} to 
+{\smalltt{\$true}}, showing that {\smalltt{own(d\_jon,d\_garfield`)}} is interpreted as 
+{\smalltt{\$true}}.
 The nodes above are increasingly darker red (grey if printed) up to the type node {\smalltt{\$o}} 
-that is the result type of {\smalltt{created\_equal}}, and increasingly darker blue down to 
-the type node {\smalltt{\$o}} that is the type of {\smalltt{\$true}}.
-This highlighting provides easy focus on the interpretations of chosen symbols.
-% inverted house nodes, to quickly find what symbols applied to
-% what domain elements are interpreted as which domain elements and boolean values by hovering over
-% the house and box nodes, and to quickly see how different domain elements affect the interpretation
-% of difference symbols by hovering over the oval nodes.
-% Details of the annotated formulae used to represent each node in the input to IIV are available 
-% in the ``Node Information'' box (which is to the left in reality, placed below here).
-This visualization is available in IIV using 
-{\smalltt{\url{https://raw.githubusercontent.com/GeoffsPapers/ModelVerification/main/TFF_Finite.s}}}
-as the ``URL to fetch from''.
-% selecting {\tt IIV 0.0} as the ``System'', and clicking the ``Process Solution'' button.
+that is the result type of {\smalltt{owns}}, and increasingly darker blue down to the type node 
+{\smalltt{\$o}} that is the type of {\smalltt{\$true}}.
+This highlighting provides easy focus on the interpretations of chosen symbols, e.g., it is easy
+to highlight what symbol applications are interpreted as {\smalltt{\$true}} or {\smalltt{\$false}},
+or how a specific function symbol is interpreted (here, but hovering over the 
+{\smalltt{\$loves\_most}} node).
+This visualization is available in IIV using the URL in the image caption
+% {\smalltt{\url{https://raw.githubusercontent.com/GeoffsPapers/ModelVerification/main/TFF_Finite.s}}}
+as the ``URL to fetch from'',
+selecting {\tt IIV 0.0} as the ``System'', and clicking the ``Process Solution'' button.
 
 \begin{figure}[htbp]
 \centering
@@ -323,14 +323,54 @@ as the ``URL to fetch from''.
 \label{TF0FiniteIIV}
 \end{figure}
 
-Further inspiration might lead to improvements to these visualizations, especially for more
-complex infinite interpretations.
+%--------------------------------------------------------------------------------------------------
+\section{IIV Implementation}
+\label{Implementation}
+
+IIV is implemented on top of IDV, and has benefited from the mature state of IDV.
+Different terms in an interpretation, e.g., problem types, problem symbols, domain elements,
+domain types, are extracted into annotated formulae with different languages and roles that
+IDV renders differently, e.g., problem symbols are extracted into {\smalltt{thf}} 
+{\smalltt{negated\_conjecture}}s that IDV renders as inverted houses with a blue outline.
+A ``derivation'' is formed by setting the ``inference'' parents of each node appropriately,
+which IDV renders as the directed links between nodes.
+
+A Prolog program is used ito extract the components of the interpretation formulae into 
+separate derivation annotated formulae.
+In order to separate nodes for different kinds of terms into different layers, a {\smalltt{level}}
+term is added to the source field of each derivation annotated formula, which is used by IDV only
+when rendering interpretations.
+An ANTLR parser is used read the extracted annotated formulae, and JavaScript is used to convert
+the resultant data structure into GraphViz \cite{EG+02} specifications.
+The GraphViz specification is rendered in the browser by 
+WHAT MAGIC SOME HTML HERE? JACK, HELP. PLEASE CHECK, CORRECT, EXPAND.
+
+% \begin{packed_itemize}
+% \item each problem type is extracted into a {\smalltt{fof}} annotated formula with the role 
+%       {\smalltt{axiom}}, which is rendered as an inverted triangle with a green outline;
+% \item each problem symbol is extracted into a {\smalltt{thf}} {\smalltt{negated\_conjecture}}
+%       whose parent (as an IDV inference) is annotated formula containing the symbol's type,
+%       and is rendered as an inverted house with a blue outline;
+% \item each domain element argument in the interpretation of a symbol is extracted into a
+%       {\smalltt{tcf}} {\smalltt{plain}} annotated formula whose parents are either annotated
+%       formulae for symbols or the annotated formula for the preceding argument,
+%       and is rendered as an ellipse with a grey outline;
+% \item each domain element interpretation for function symbols is extracted into a {\smalltt{tcf}} 
+%       {\smalltt{conjecture}} whose parents are the last annotated formulae of paths from symbols 
+%       through domain elements,
+%       and is rendered as a house with a grey outline;
+% \item each truth value interpretation for predicate symbols is extracted into a {\smalltt{tcf}} 
+%       {\smalltt{conjecture}} whose parents are the last annotated formulae of paths from symbols
+%       through domain elements,
+%       and is rendered as a box (as a special case) with a grey outline;
+% \end{packed_itemize}
 
 %--------------------------------------------------------------------------------------------------
-\section{Conclusion}
-\label{Conclusion}
+\section{Future Work}
+\label{Future}
 
-This poster describes 
+Further inspiration might lead to improvements to IDV, especially for infinite interpretations
+and Kripke interpretations \cite{Kri63} for non-classical logics.
 
 %--------------------------------------------------------------------------------------------------
 \bibliographystyle{flairs}
