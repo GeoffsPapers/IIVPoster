@@ -1,51 +1,45 @@
-%------------------------------------------------------------------------------
-tff(man_type,type,           man: $tType ).
-tff(grade_type,type,         grade: $tType ).
-tff(john_decl,type,          john: man ).
-tff(a_decl,type,             a: grade ).
-tff(f_decl,type,             f: grade ).
-tff(grade_of_decl,type,      grade_of: man > grade ).
-tff(created_equal_decl,type, created_equal: ( man * man ) > $o ).
+tff(human_type,type,      human: $tType ).
+tff(cat_type,type,        cat: $tType ).
+tff(jon_decl,type,        jon: human ).
+tff(garfield_decl,type,   garfield: cat ).
+tff(arlene_decl,type,     arlene: cat ).
+tff(loves_most_decl,type, loves_most: cat > cat ).
+tff(owns_decl,type,       owns: ( human * cat ) > $o ).
 
-tff(d_man_type,type,         d_man: $tType).
-tff(d_grade_type,type,       d_grade: $tType).
-tff(d_to_man_decl,type,      d_to_man: d_man > man ).
-tff(d_to_grade_decl,type,    d_to_grade: d_grade > grade ).
-
-tff(d_john_decl,type,        d_john: d_man ).
-tff(d_got_A_decl,type,       d_got_A: d_man ).
-tff(d_a_decl,type,           d_a: d_grade ).
-tff(d_f_decl,type,           d_f: d_grade ).
+%----Types of the domains
+tff(d_human_type,type,    d_human: $tType ).
+tff(d_cat_type,type,      d_cat: $tType ).
+%----Types of the promotion functions
+tff(d2human_decl,type,    d2human: d_human > human ).
+tff(d2cat_decl,type,      d2cat: d_cat > cat ).
+%----Types of the domain elements
+tff(d_jon_decl,type,      d_jon: d_human ).
+tff(d_garfield_decl,type, d_garfield: d_cat ).
+tff(d_arlene_decl,type,   d_arlene: d_cat ).
 
 tff(equality_lost,interpretation,
-%----The domain for man is d_man
-    ( ( ! [M: man] : ? [DM: d_man] : M = d2man(DM)
-%----The d_man elements are d_john and d_got_A
-      & ! [DM: d_man] : ( DM = d_john | DM = d_got_A )
-      & $distinct(d_john,d_got_A)
-%----The type promoter is a bijection 
-      & ! [DM1: d_man,DM2: d_man] :
-          ( d2man(DM1) = d2man(DM2) => DM1 = DM2 )
-%----The domain for grade is d_grade
-      & ! [G: grade] : ? [DG: d_grade] : G = d2grade(DG)
-%----The d_grade elements are d_a and d_f
-      & ! [DG: d_grade]: ( DG = d_a | DG = d_f )
-      & $distinct(d_a,d_f)
-%----The type promoter is a bijection
-      & ! [DG1: d_grade,DG2: d_grade] : 
-          ( d2grade(DG1) = d2grade(DG2) => DG1 = DG2 ) )
-%----Interpret terms via the type-promoted domain
-    & ( a = d2grade(d_a)
-      & f = d2grade(d_f)
-      & john = d2man(d_john)
-      & grade_of(d2man(d_john)) = d2grade(d_f)
-      & grade_of(d2man(d_got_A)) = d2grade(d_a) )
-%----Interpret atoms as true or false
-    & ( created_equal(d2man(d_john),d2man(d_john))
-      & created_equal(d2man(d_john),d2man(d_got_A))
-      & created_equal(d2man(d_got_A),d2man(d_john))
-      & created_equal(d2man(d_got_A),d2man(d_got_A)) ) ) ).
-%----If John was not created equal to the person who got an A:
-%---- & ~ created_equal(d2man(d_john),d2man(d_got_A))
-%---- & ~ created_equal(d2man(d_got_A),d2man(d_john))
-%------------------------------------------------------------------------------
+%----The domain for human
+    ( ( ! [H: human] : ? [DH: d_human] : H = d2human(DH)
+      & ! [DH: d_human] : ( DH = d_jon )
+      & ! [DH1: d_human,DH2: d_human] :
+          ( d2human(DH1) = d2human(DH2) => DH1 = DH2 )
+%----The domain for cat
+      & ! [C: cat] : ? [DC: d_cat] : C = d2cat(DC)
+      & ! [DC: d_cat]: ( DC = d_garfield | DC = d_arlene )
+      & $distinct(d_garfield,d_arlene)
+      & ! [DC1: d_cat,DC2: d_cat] :
+          ( d2cat(DC1) = d2cat(DC2) => DC1 = DC2 ) )
+%----Interpret terms and atoms
+    & ( jon = d2human(d_jon)
+      & garfield = d2cat(d_garfield)
+      & arlene = d2cat(d_arlene)
+      & loves_most(d2cat(d_garfield)) = d2cat(d_garfield)
+      & loves_most(d2cat(d_arlene)) = d2cat(d_garfield) )
+    & ( owns(d2human(d_jon),d2cat(d_garfield))
+      & ~ owns(d2human(d_jon),d2cat(d_arlene)) ) ) ).
+
+% tff(only_jon,axiom,
+%     ! [H: human] : H = jon).
+% tff(only_garfield_and_arlene,axiom,
+%     ! [C: cat] : (C = garfield | C = arlene) ).
+

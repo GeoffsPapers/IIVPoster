@@ -54,11 +54,11 @@ Some place\\
 Some country}
 
 \maketitle
-\begin{abstract}
-\begin{quote}
-This poster describes IIV.
-\end{quote}
-\end{abstract}
+% \begin{abstract}
+% \begin{quote}
+% This poster describes IIV.
+% \end{quote}
+% \end{abstract}
 %--------------------------------------------------------------------------------------------------
 \section{Introduction}
 \label{Introduction}
@@ -76,26 +76,26 @@ to domain elements and formulae to truth values.
 An interpretation that maps a formula to {\em true} is a {\em model} of the formula.
 A conjecture is disproved by finding an interpretation that is a model of the axioms, but 
 maps the conjecture to {\em false}.
-A salient application area that harnesses this form of ATP is verification \cite{DKW08},
-where a countermodel is used to pinpoint the reason why a proof obligation fails, and
-correspondingly points to the location of the fault in the system being verified.
+A salient application area that harnesses this form of ATP is verification \cite{DKW08}.
+% where a countermodel is used to pinpoint the reason why a proof obligation fails, and
+% correspondingly points to the location of the fault in the system being verified.
 This work describes an interactive interpretation viewer for interpretations written in the
-(new) TPTP format for interpretations \cite{FLAIRS}.
+(new) TPTP format \cite{FLAIRS}.
 
-\paragraph{Related Work:}
-Related work is sparse.
-The Mace4 model finder \cite{McC03-MACE4-TR} outputs textual 
-information about the models it finds, including the interpretation of constants as integers,
-and tables for the function and predicate symbols' interpretations. 
-The tables are naturally limited to symbols of arity up to two (which is just fine for algebras, 
-where Mace4 is often applied).
-The only graphical visualization tool that has been found is that described in \cite{Sch13-MS},
-which provided (past tense -- it is no longer available) a visualization of finite first-order 
-interpretations as produced by Paradox.
-The visualization had some nice features, e.g., showing functions as constructor functions, and 
-reducing the visual clutter when displaying relations with properties such as symmetry, 
-transitivity, etc.
-In other ways that work was quite different from the visualization described in this work.
+% \paragraph{Related Work:}
+% Related work is sparse.
+% The Mace4 model finder \cite{McC03-MACE4-TR} outputs textual 
+% information about the models it finds, including the interpretation of constants as integers,
+% and tables for the function and predicate symbols' interpretations. 
+% The tables are naturally limited to symbols of arity up to two (which is just fine for algebras, 
+% where Mace4 is often applied).
+% The only graphical visualization tool that has been found is that described in \cite{Sch13-MS},
+% which provided (past tense -- it is no longer available) a visualization of finite first-order 
+% interpretations as produced by Paradox.
+% The visualization had some nice features, e.g., showing functions as constructor functions, and 
+% reducing the visual clutter when displaying relations with properties such as symmetry, 
+% transitivity, etc.
+% In other ways that work was quite different from the visualization described in this work.
 
 %--------------------------------------------------------------------------------------------------
 \section{The TPTP World and Languages}
@@ -103,8 +103,10 @@ In other ways that work was quite different from the visualization described in 
 
 The TPTP World \cite{Sut17} is a well established infrastructure that supports research, 
 development, and deployment of Automated Theorem Proving (ATP) systems.
-The TPTP language \cite{Sut22-IGPL} is one of the keys to the success of the TPTP World.
-The language is used for writing both problems and solutions.
+The TPTP language \cite{Sut22-IGPL} is 
+% one of the keys to the success of the TPTP World.
+% The language is 
+used for writing both problems and solutions.
 The top level building blocks of the TPTP language are {\em annotated formulae}.
 An annotated formula has the form:\\
 \hspace*{0.5cm}{\em language}{\tt (}{\em name}{\tt ,}
@@ -117,57 +119,56 @@ The {\em language}s supported are {\smalltt{cnf}} (clause normal form), {\smallt
 (typed higher-order form).
 The {\em role}, e.g., {\smalltt{axiom}}, {\smalltt{lemma}}, {\smalltt{conjecture}},
 defines the use of the formula in an ATP system.
-In a {\em formula}, terms and atoms follow Prolog conventions
--- functions and predicates start with a lowercase letter or are {\tt '}single quoted{\tt '}, and 
-variables start with an uppercase letter.
-The language also supports interpreted symbols, which either start with a {\tt \$}, e.g., 
-the truth constants {\smalltt{\$true}} and {\smalltt{\$false}}, or are composed of 
-non-alphanumeric characters, e.g., integer/rational/real numbers such as 27, 43/92, -99.66.
+The {\em formula} follows Prolog conventions, and can
+% -- functions and predicates start with a lowercase letter or are {\tt '}single quoted{\tt '}, and 
+% variables start with an uppercase letter.
+additionally include interpreted symbols that start with a {\tt \$}, e.g., {\smalltt{\$true}},
+% and {\smalltt{\$false}}, 
+and numbers.
+% integer/rational/real numbers such as 27, 43/92, -99.66.
 The basic logical connectives are
 {\tt !}, {\tt ?}, {\tt \verb|~|}, {\tt |}, {\tt \&}, {\tt =>}, {\tt <=}, {\tt <=>}, and 
-{\tt <{\raisebox{0.4ex}{\texttildelow}}>},
-for
-$\forall$, $\exists$, $\neg$, $\vee$, $\wedge$, $\Rightarrow$, $\Leftarrow$, $\Leftrightarrow$, 
-and $\oplus$ respectively.
+{\tt <{\raisebox{0.4ex}{\texttildelow}}>}.
+% for
+% $\forall$, $\exists$, $\neg$, $\vee$, $\wedge$, $\Rightarrow$, $\Leftarrow$, $\Leftrightarrow$, 
+% and $\oplus$ respectively.
 Equality and inequality are expressed as the infix operators {\tt =} and {\tt !=}.
 The {\em source} and {\em useful\_info} are optional.
 Figure~\ref{TF0FiniteProblem} is an example of a problem in monomorphic typed first-order
 form (TF0).  
-The associated (counter)model is discussed in Section~\ref{Interpretations}.
+% The associated (counter)model is discussed in Section~\ref{Interpretations}.
 
-\begin{figure}[htbp]
+\begin{figure}[tbhp]
 \scriptsize
 \setstretch{0.8}
 \begin{verbatim}
 %--------------------------------------------------------
-tff(man_type,type,           man: $tType ).
-tff(grade_type,type,         grade: $tType ).
-tff(john_decl,type,          john: man ).
-tff(a_decl,type,             a: grade ).
-tff(f_decl,type,             f: grade ).
-tff(grade_of_decl,type,      grade_of: man > grade ).
-tff(created_equal_decl,type, 
-    created_equal: ( man * man ) > $o ).
+tff(human_type,type,      human: $tType ).
+tff(cat_type,type,        cat: $tType ).
+tff(jon_decl,type,        jon: human ).
+tff(garfield_decl,type,   garfield: cat ).
+tff(arlene_decl,type,     arlene: cat ).
+tff(loves_most_decl,type, loves_most: cat > cat ).
+tff(owns_decl,type,       owns: ( human * cat ) > $o ).
 
-tff(all_created_equal,axiom,
-    ! [H1: man,H2: man] : created_equal(H1,H2) ).
+tff(garfield_not_arlene,axiom,
+    garfield != arlene ).
 
-tff(john_failed,axiom,
-    grade_of(john) = f ).
+tff(jon_owns_only_garfield,axiom,
+    ( owns(jon,garfield) & ~ owns(jon,arlene) ) ).
 
-tff(someone_got_an_a,axiom,
-    ? [H: man] : grade_of(H) = a ).
+tff(all_cats_love_garfield,axiom,
+    ! [C: cat] : ( loves_most(C) = garfield ) ).
 
-tff(distinct_grades,axiom,
-    a != f ).
-
-tff(equality_lost,conjecture,
-    ! [H1: man,H2: man] :
-      ( created_equal(H1,H2) <=> ( H1 = H2 ) ) ).
+tff(jon_owns_garfields_lovers,conjecture,
+    ! [C: cat] : 
+      ( ( loves_most(C) = garfield ) => owns(jon,C) ) ).
 %--------------------------------------------------------
 \end{verbatim}
-\caption{A TF0 problem (with a finite countermodel)\\
-{\scriptsize \url{https://raw.githubusercontent.com/GeoffsPapers/ModelVerification/main/TFF_Finite.p}}}
+\caption{A TF0 problem (with a finite countermodel)
+% \\
+% {\scriptsize \url{https://raw.githubusercontent.com/GeoffsPapers/ModelVerification/main/TFF_Finite.p}}
+}
 \label{TF0FiniteProblem}
 \end{figure}
 
@@ -179,18 +180,17 @@ A Tarskian-style interpretation \cite{TV56} of formulae in typed first-order log
 non-empty domain of unequal elements for each type used in the formulae (just one domain for 
 untyped logic), and interpretations of the function and predicate symbols with respect to the 
 domains \cite{Hun96}.
-The domains of an interpretation may be finite or infinite.
-Interpretations with only finite domains are called {\em finite interpretations}, and
-interpretations with one of more infinite domains are called {\em infinite interpretations}.
-Finite domains are commonly explicitly enumerated, but can also take other forms, e.g., the 
-finite Herbrand Universe of a Herbrand interpretation \cite{Her30}.
-Infinite domains can take several forms, including being implicitly specified (e.g., some set
-of algebraic numbers, such as the integers), explicitly generated (e.g., terms representing 
-Peano numbers), and the infinite Herbrand Universe of a Herbrand interpretation.
-
-The underlying principle is to represent interpretations as formulae.
-The representation format uses an {\em interpretation formula}, preceded by the necessary type 
-declarations.
+% The domains of an interpretation may be finite or infinite.
+% Interpretations with only finite domains are called {\em finite interpretations}, and
+% interpretations with one of more infinite domains are called {\em infinite interpretations}.
+% Finite domains are commonly explicitly enumerated, but can also take other forms, e.g., the 
+% finite Herbrand Universe of a Herbrand interpretation \cite{Her30}.
+% Infinite domains can take several forms, including being implicitly specified (e.g., some set
+% of algebraic numbers, such as the integers), explicitly generated (e.g., terms representing 
+% Peano numbers), and the infinite Herbrand Universe of a Herbrand interpretation.
+The TPTP representation of an interpretation uses an {\em interpretation formula}, preceded by 
+the necessary type declarations.
+{\em Type-promotion} functions are used to convert domain elements to terms.
 %\begin{packed_itemize}
 %\item the type declarations for the formulae being interpreted;
 %\item the types of the domains (unless already defined in the language, e.g., the type
@@ -225,6 +225,7 @@ needed.
 
 Figure~\ref{TF0FiniteInterpretation} is a TF0 interpretation with finite domains -- it is a 
 countermodel for the problem in Figure~\ref{TF0FiniteProblem}.
+The type declarations have been omited, but can be seen in URL provided.
 The comments show which parts of the formula specify what aspects of the interpretation, per
 the list above.
 
@@ -233,56 +234,26 @@ the list above.
 \setstretch{0.8}
 \begin{verbatim}
 %--------------------------------------------------------
-tff(man_type,type,           man: $tType ).
-tff(grade_type,type,         grade: $tType ).
-tff(john_decl,type,          john: man ).
-tff(a_decl,type,             a: grade ).
-tff(f_decl,type,             f: grade ).
-tff(grade_of_decl,type,      grade_of: man > grade ).
-tff(created_equal_decl,type, 
-    created_equal: ( man * man ) > $o ).
-
-%----Types of the domains
-tff(d_man_type,type,         d_man: $tType).
-tff(d_grade_type,type,       d_grade: $tType).
-%----Types of the promotion functions
-tff(d2man_decl,type,         d2man: d_man > man ).
-tff(d2grade_decl,type,       d2grade: d_grade > grade ).
-%----Types of the domain elements
-tff(d_john_decl,type,        d_john: d_man ).
-tff(d_gotA_decl,type,        d_gotA: d_man ).
-tff(d_a_decl,type,           d_a: d_grade ).
-tff(d_f_decl,type,           d_f: d_grade ).
-
 tff(equality_lost,interpretation,
-%----The domain for man is d_man
-    ( ( ! [M: man] : ? [DM: d_man] : M = d2man(DM)
-%----The d_man elements are d_john and d_gotA
-      & ! [DM: d_man] : ( DM = d_john | DM = d_gotA )
-      & $distinct(d_john,d_gotA)
-%----The type-promoter is a bijection
-      & ! [DM1: d_man,DM2: d_man] :
-          ( d2man(DM1) = d2man(DM2) => DM1 = DM2 )
-%----The domain for grade is d_grade
-      & ! [G: grade] : ? [DG: d_grade] : G = d2grade(DG)
-%----The d_grade elements are d_a and d_f
-      & ! [DG: d_grade]: ( DG = d_a | DG = d_f )
-      & $distinct(d_a,d_f)
-%----The type-promoter is a bijection
-      & ! [DG1: d_grade,DG2: d_grade] :
-          ( d2grade(DG1) = d2grade(DG2) => DG1 = DG2 ) )
-%----Interpret terms via the type-promoted domain
-    & ( a = d2grade(d_a)
-      & f = d2grade(d_f)
-      & john = d2man(d_john)
-      & grade_of(d2man(d_john)) = d2grade(d_f)
-      & grade_of(d2man(d_gotA)) = d2grade(d_a) )
-%----Interpret atoms as true of false
-    & ( created_equal(d2man(d_john),d2man(d_john))
-      & created_equal(d2man(d_john),d2man(d_gotA))
-      & created_equal(d2man(d_gotA),d2man(d_john))
-      & created_equal(d2man(d_gotA),d2man(d_gotA)) ) 
-    ) ).
+%----The domain for human
+    ( ( ! [H: human] : ? [DH: d_human] : H = d2human(DH)
+      & ! [DH: d_human] : ( DH = d_jon )
+      & ! [DH1: d_human,DH2: d_human] :
+          ( d2human(DH1) = d2human(DH2) => DH1 = DH2 )
+%----The domain for cat
+      & ! [C: cat] : ? [DC: d_cat] : C = d2cat(DC)
+      & ! [DC: d_cat]: ( DC = d_garfield | DC = d_arlene )
+      & $distinct(d_garfield,d_arlene)
+      & ! [DC1: d_cat,DC2: d_cat] :
+          ( d2cat(DC1) = d2cat(DC2) => DC1 = DC2 ) )
+%----Interpret terms and atoms
+    & ( jon = d2human(d_jon)
+      & garfield = d2cat(d_garfield)
+      & arlene = d2cat(d_arlene)
+      & loves_most(d2cat(d_garfield)) = d2cat(d_garfield)
+      & loves_most(d2cat(d_arlene)) = d2cat(d_garfield) )
+    & ( owns(d2human(d_jon),d2cat(d_garfield))
+      & ~ owns(d2human(d_jon),d2cat(d_arlene)) ) ) ).
 %--------------------------------------------------------
 \end{verbatim}
 \caption{A TF0 interpretation with a finite domain \\
@@ -294,27 +265,13 @@ tff(equality_lost,interpretation,
 \section{Interpretation Visualization}
 \label{Visualization}
 
-Proof visualization is well-established, with several tools available, e.g., 
-Evonne \cite{AB+22},
-%  is an interactive proof visualization software for description logics,
-% \footnote{\smalltt{https://lat.inf.tu-dresden.de/research/papers/2022/ALBABODAKOME-IJCAR22.pdf}}
-ProofTree \cite{Tew17},
-% is a proof visualization tool focused on interactive theorem proving within Coq,
-% \footnote{\smalltt{https://askra.de/software/prooftree/}} 
-% ProofTree currently only supports proofs from Coq.
-Treehehe \cite{Bat18},
-%  was designed generically to visualize any proof tree,
-% \footnote{\smalltt{https://chelsea.lol/Resources/COMP5209\_BattellC\_report.pdf}} 
-% but currently it only supports a handful of pre-existing proofs and does not allow users 
-%to visualize their own proofs.
-and
-the Interactive Derivation Viewer \cite{TPS07} (IDV) -- a tool for visualization of 
-TPTP format proofs.
+Proof visualization is well-established, with several tools available, including the Interactive 
+Derivation Viewer \cite{TPS07} (IDV) -- a tool for visualization of TPTP format proofs.
 Interpretation visualization, however, has (to the knowledge of the authors) had minimal 
-attention, as noted in Section~\ref{Introduction}. 
-Visualization of interpretations is useful in areas such as teaching logic, debugging ATP 
-systems, and understanding of a model.
-
+attention.
+% Visualization of interpretations is useful in areas such as teaching logic, debugging ATP 
+% systems, and understanding of a model.
+% 
 A visualization for TF0 interpretations has been designed in this work, and an initial
 implementation is available as the IIV tool in the SystemOnTSTP web interface.
 IIV is built on top of IDV, and has benefited from the mature state of IDV.
@@ -361,7 +318,7 @@ as the ``URL to fetch from''.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\columnwidth]{TFF_Finite.s.IIV.pdf}
+\includegraphics[width=\columnwidth]{IIVGraph.pdf}
 \caption{Visualization of the interpretation in Figure~\ref{TF0FiniteInterpretation}}
 \label{TF0FiniteIIV}
 \end{figure}
