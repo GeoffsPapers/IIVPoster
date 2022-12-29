@@ -186,10 +186,10 @@ untyped logic), and interpretations of the function and predicate symbols with r
 domains \cite{Hun96}.
 Interpretations with only finite domains are called {\em finite interpretations}, and
 interpretations with one of more infinite domains are called {\em infinite interpretations}.
-The domains of an interpretation may be finite or infinite, but only finite domains are discussed
-in this work.
+The domains of an interpretation may be finite or infinite
 Finite domains are commonly explicitly enumerated, but can also take other forms, e.g., the 
 finite Herbrand Universe of a Herbrand interpretation \cite{Her30}.
+This work deals with only enumerated finite domains.
 % Infinite domains can take several forms, including being implicitly specified (e.g., some set
 % of algebraic numbers, such as the integers), explicitly generated (e.g., terms representing 
 % Peano numbers), and the infinite Herbrand Universe of a Herbrand interpretation.
@@ -233,7 +233,7 @@ needed.
  
 Figure~\ref{TF0FiniteInterpretation} is a TF0 interpretation with finite domains -- it is a 
 countermodel for the problem in Figure~\ref{TF0FiniteProblem}.
-The type declarations have been omited, and can be seen in URL provided.
+The type declarations have been omitted, and can be found in URL provided.
 % The comments show which parts of the formula specify what aspects of the interpretation, per
 % the list above.
 
@@ -264,7 +264,7 @@ tff(equality_lost,interpretation,
       & ~ owns(d2human(d_jon),d2cat(d_arlene)) ) ) ).
 %--------------------------------------------------------
 \end{verbatim}
-\caption{A TF0 interpretation with a finite domain \\
+\caption{A TF0 countermodel for the problem in Figure~\ref{TF0FiniteProblem} \\
 {\scriptsize \url{https://raw.githubusercontent.com/GeoffsPapers/IIVPoster/main/TFF_Finite.s}}}
 \label{TF0FiniteInterpretation}
 \end{figure}
@@ -277,9 +277,8 @@ Proof visualization is well-established, with several tools available, including
 Derivation Viewer (IDV) \cite{TPS07} -- a tool for visualizing TPTP format proofs.
 Interpretation visualization, however, has (to the knowledge of the authors) had minimal 
 attention.
-% Visualization of interpretations is useful in areas such as teaching logic, debugging ATP 
-% systems, and understanding of a model.
-% 
+Visualization of interpretations is useful in areas such as teaching logic, debugging ATP 
+systems, and understanding of a model.
 A visualization for TF0 interpretations has been designed in this work, and an initial
 implementation is available as the IIV tool in the SystemOnTSTP web interface.
 % The implementation is ``initial'' because it is fully automated only for finite TF0 and untyped
@@ -288,7 +287,7 @@ implementation is available as the IIV tool in the SystemOnTSTP web interface.
 % have to be manually extracted into separate annotated formulae, to mimic a derivation that IDV 
 % can render.
 
-Figure~\ref{TF0FiniteIIV} is the visualization of the finite countermodel in 
+Figure~\ref{TF0FiniteIIV} is the visualization of the interpretation in 
 Figure~\ref{TF0FiniteInterpretation}.
 The top row of inverted triangles are the types in the given formulae,
 while the bottom row of inverted triangles are the types of the domains in the interpretation
@@ -314,10 +313,11 @@ The nodes above are increasingly darker red (grey if printed) up to the type nod
 that is the result type of {\smalltt{owns}}, and increasingly darker blue down to the type node 
 {\smalltt{\$o}} that is the type of {\smalltt{\$true}}.
 This highlighting provides easy focus on the interpretations of chosen symbols, e.g., it is easy
-to highlight what symbol applications are interpreted as {\smalltt{\$true}} or {\smalltt{\$false}},
-or how a specific function symbol is interpreted (here, but hovering over the 
-{\smalltt{\$loves\_most}} node).
-This visualization is available in IIV using the URL in the image caption
+to highlight what symbol applications are interpreted as {\smalltt{\$true}} or {\smalltt{\$false}}
+by hovering over the corresponding truth value node, or how a specific function symbol is 
+interpreted, e.g, by hovering over the {\smalltt{loves\_most}} node.
+
+This visualization is available in IIV using the URL provided for the interpretation
 % {\smalltt{\url{https://raw.githubusercontent.com/GeoffsPapers/ModelVerification/main/TFF_Finite.s}}}
 as the ``URL to fetch from'',
 selecting {\tt IIV 0.0} as the ``System'', and clicking the ``Process Solution'' button.
@@ -336,16 +336,17 @@ selecting {\tt IIV 0.0} as the ``System'', and clicking the ``Process Solution''
 IIV is implemented on top of IDV, and has benefited from the mature state of IDV.
 Different terms in an interpretation, e.g., problem types, problem symbols, domain elements,
 domain types, are extracted into annotated formulae with different languages and roles that
-IDV renders differently, e.g., problem symbols are extracted into {\smalltt{thf}} 
-{\smalltt{negated\_conjecture}}s that IDV renders as inverted houses with a blue outline.
+IDV renders differently, e.g., problem symbols are extracted into annotated formulae with
+the language {\smalltt{thf}} and the role {\smalltt{negated\_conjecture}}, which IDV renders 
+as inverted houses with a blue outline.
 A ``derivation'' is formed by setting the ``inference'' parents of each node appropriately,
 which IDV renders as the directed links between nodes.
-
-A Prolog program is used ito extract the components of the interpretation formulae into 
-separate derivation annotated formulae.
+A Prolog program is used to extract the components of the interpretation formulae into 
+the separate derivation annotated formulae.
 In order to separate nodes for different kinds of terms into different layers, a {\smalltt{level}}
 term is added to the source field of each derivation annotated formula, which is used by IDV only
 when rendering interpretations.
+
 An ANTLR parser is used read the extracted annotated formulae, and JavaScript is used to convert
 the resultant data structure into GraphViz \cite{EG+02} specifications.
 The GraphViz specification is rendered in the browser by 
