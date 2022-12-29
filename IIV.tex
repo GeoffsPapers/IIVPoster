@@ -56,7 +56,8 @@ Some country}
 \maketitle
 % \begin{abstract}
 % \begin{quote}
-% This poster describes IIV.
+% This poster describes the Interactive Interpretation Viewer - IIV, for interpretations of
+% typed first order formulae, written in the (new) TPTP format for interpretations.
 % \end{quote}
 % \end{abstract}
 %--------------------------------------------------------------------------------------------------
@@ -69,13 +70,14 @@ follow inevitably from known facts \cite{RV01-HAR}.
 The axioms and conjecture to be proved (to become a theorem) are written in an 
 appropriately expressive logic, and the proofs are often similarly written in logic \cite{SS+06}.
 In this work typed first-order logic is used.
-In the last two decades the converse task of disproving conjectures
-has become increasingly important.
-This process depends on finding an {\em interpretation}, i.e., a structure that maps terms 
-to domain elements and formulae to truth values.
-An interpretation that maps a formula to {\em true} is a {\em model} of the formula.
-A conjecture is disproved by finding an interpretation that is a model of the axioms, but 
-maps the conjecture to {\em false}.
+In the last two decades the converse task of disproving conjectures has become increasingly 
+important.
+This is achieved by finding an {\em interpretation} -- a structure that maps terms to domain 
+elements and formulae to truth values, that is a {\em model} of the axioms -- it maps the axioms to 
+{\em true}, and a {\em countermodel} of the conjecture -- it maps the conjecture to {\em false}
+(or equivalently, it is a model of the negated conjecture).
+% A conjecture is disproved by finding an interpretation that is a model of the axioms, but 
+% it maps the conjecture to {\em false}.
 A salient application area that harnesses this form of ATP is verification \cite{DKW08}.
 % where a countermodel is used to pinpoint the reason why a proof obligation fails, and
 % correspondingly points to the location of the fault in the system being verified.
@@ -117,21 +119,22 @@ An annotated formula has the form:\\
 The {\em language}s supported are {\smalltt{cnf}} (clause normal form), {\smalltt{tcf}} (typed
 clause normal form), {\smalltt{fof}} (first-order form), {\smalltt{tff}} (typed first-order form), 
 and {\smalltt{thf}} (typed higher-order form).
-The {\em role}, e.g., {\smalltt{axiom}}, {\smalltt{lemma}}, {\smalltt{conjecture}},
-defines the use of the formula in an ATP system.
+The {\em role}, e.g., {\smalltt{type}}, {\smalltt{axiom}}, {\smalltt{conjecture}}, defines the use 
+of the formula in an ATP system.
 The {\em formula} follows Prolog conventions, and can
 % -- functions and predicates start with a lowercase letter or are {\tt '}single quoted{\tt '}, and 
 % variables start with an uppercase letter.
-additionally include interpreted symbols that start with a {\tt \$}, e.g., {\smalltt{\$true}},
+additionally include interpreted symbols that start with a {\tt \$}, e.g., {\smalltt{\$true} and
+its boolean type {\smalltt{\$o}}.
 % and {\smalltt{\$false}}, 
-and numbers.
+% and numbers.
 % integer/rational/real numbers such as 27, 43/92, -99.66.
-The basic logical connectives are
+The logical connectives are
 {\tt !}, {\tt ?}, {\tt \verb|~|}, {\tt |}, {\tt \&}, {\tt =>}, {\tt <=}, {\tt <=>}, and 
 {\tt <{\raisebox{0.4ex}{\texttildelow}}>}.
-% for
-% $\forall$, $\exists$, $\neg$, $\vee$, $\wedge$, $\Rightarrow$, $\Leftarrow$, $\Leftrightarrow$, 
-% and $\oplus$ respectively.
+for
+$\forall$, $\exists$, $\neg$, $\vee$, $\wedge$, $\Rightarrow$, $\Leftarrow$, $\Leftrightarrow$, 
+and $\oplus$ respectively.
 Equality and inequality are expressed as the infix operators {\tt =} and {\tt !=}.
 The {\em source} and {\em useful\_info} are optional.
 Figure~\ref{TF0FiniteProblem} is an example of a problem in monomorphic typed first-order
@@ -165,7 +168,8 @@ tff(jon_owns_garfields_lovers,conjecture,
       ( ( loves_most(C) = garfield ) => owns(jon,C) ) ).
 %--------------------------------------------------------
 \end{verbatim}
-\caption{A TF0 problem (with a finite countermodel)
+\caption{A TF0 problem
+% (with a finite countermodel)
 % \\
 % {\scriptsize \url{https://raw.githubusercontent.com/GeoffsPapers/IIVPoster/main/TFF_Finite.p}}
 }
@@ -177,22 +181,20 @@ tff(jon_owns_garfields_lovers,conjecture,
 \label{Interpretations}
 
 A Tarskian-style interpretation \cite{TV56} of formulae in typed first-order logic consists of a 
-non-empty domain of unequal elements for each type used in the formulae (just one domain for 
+non-empty domain of unequal elements for each type in the formulae (just one domain for 
 untyped logic), and interpretations of the function and predicate symbols with respect to the 
 domains \cite{Hun96}.
+Interpretations with only finite domains are called {\em finite interpretations}, and
+interpretations with one of more infinite domains are called {\em infinite interpretations}.
 The domains of an interpretation may be finite or infinite, but only finite domains are discussed
 in this work.
-% Interpretations with only finite domains are called {\em finite interpretations}, and
-% interpretations with one of more infinite domains are called {\em infinite interpretations}.
-% Finite domains are commonly explicitly enumerated, but can also take other forms, e.g., the 
-% finite Herbrand Universe of a Herbrand interpretation \cite{Her30}.
+Finite domains are commonly explicitly enumerated, but can also take other forms, e.g., the 
+finite Herbrand Universe of a Herbrand interpretation \cite{Her30}.
 % Infinite domains can take several forms, including being implicitly specified (e.g., some set
 % of algebraic numbers, such as the integers), explicitly generated (e.g., terms representing 
 % Peano numbers), and the infinite Herbrand Universe of a Herbrand interpretation.
 The TPTP representation of an interpretation uses an {\em interpretation formula}, preceded by 
 the necessary type declarations.
-Type-promotion functions are used to convert domain elements to terms, in order to make the
-interpretation formula well-typed.
 %\begin{packed_itemize}
 %\item the type declarations for the formulae being interpreted;
 %\item the types of the domains (unless already defined in the language, e.g., the type
@@ -202,8 +204,10 @@ interpretation formula well-typed.
 %\item the types of the domain elements.
 %\end{packed_itemize}
 % \vspace*{-0.4em}
-The interpretation formula is a conjunction providing details of the domains -
-their types and elements, and interpretation of the symbols applied to domain elements.
+The interpretation formula is a conjunction providing details of the domains - their types and 
+elements, and the interpretation of the symbols applied to domain elements.
+Type-promotion functions are used to convert domain elements to terms, to make the
+interpretation formula well-typed.
 % \begin{packed_itemize}
 % \item for each type in the formulae:
 %       \begin{packed_itemize}
@@ -222,12 +226,11 @@ their types and elements, and interpretation of the symbols applied to domain el
 %       are {\em false}.
 % \end{packed_itemize}
 The representation is also directly usable for untyped first-order logic, where all terms 
-% in 
-% the given and interpretation formulae 
-are of the same type – ``individuals''. 
-% This obviates the need for type considerations, in particular type-promotion functions are not 
-% needed.
-% 
+in both the given and interpretation formulae 
+are of the same type -- ``individuals''. 
+This obviates the need for type considerations, in particular type-promotion functions are not 
+needed.
+ 
 Figure~\ref{TF0FiniteInterpretation} is a TF0 interpretation with finite domains -- it is a 
 countermodel for the problem in Figure~\ref{TF0FiniteProblem}.
 The type declarations have been omited, and can be seen in URL provided.
@@ -271,7 +274,7 @@ tff(equality_lost,interpretation,
 \label{Visualization}
 
 Proof visualization is well-established, with several tools available, including the Interactive 
-Derivation Viewer \cite{TPS07} (IDV) -- a tool for visualization of TPTP format proofs.
+Derivation Viewer (IDV) \cite{TPS07} -- a tool for visualizing TPTP format proofs.
 Interpretation visualization, however, has (to the knowledge of the authors) had minimal 
 attention.
 % Visualization of interpretations is useful in areas such as teaching logic, debugging ATP 
@@ -279,8 +282,8 @@ attention.
 % 
 A visualization for TF0 interpretations has been designed in this work, and an initial
 implementation is available as the IIV tool in the SystemOnTSTP web interface.
-The implementation is ``initial'' because it is fully automated for only finite TF0
-interpretations.
+% The implementation is ``initial'' because it is fully automated only for finite TF0 and untyped
+% logic interpretations.
 % ; for infinite interpretations different components of the interpretation formula 
 % have to be manually extracted into separate annotated formulae, to mimic a derivation that IDV 
 % can render.
@@ -291,14 +294,17 @@ The top row of inverted triangles are the types in the given formulae,
 while the bottom row of inverted triangles are the types of the domains in the interpretation
 formula.
 The inverted houses are the function and predicate symbols, and the successive rows of ovals are 
-the successive domain element arguments used to specify the symbols' interpretations.
+the successive domain element arguments used in the specification of the symbols' interpretations.
 Finally, the row of houses and boxes are the interpretations of the symbols applied to those
 arguments; houses for functions and boxes for predicates.
-Paths from leaf type nodes to root type nodes show the interpretation of symbols and the domain
-elements.
+Paths from leaf nodes to root nodes show the interpretations of the symbols applied to the 
+domain elements.
 For example, in the given formulae the type of {\smalltt{loves\_most}} is {\smalltt{cat}},
 and {\smalltt{loves\_most(d\_arlene)}} is interpreted as {\smalltt{d\_garfield}}, which is of type
 {\smalltt{d\_cat}} in the interpretation formula.
+% Similarly, in the given formulae the type of {\smalltt{owns}} is {\smalltt{\$o}}, and
+% {\smalltt{owns(d\_jon,d\_garfield)}} is interpreted as {\smalltt{\$true}}, which is of type
+% {\smalltt{\$o}} in the interpretation formula.
 
 IIV provides some interactive features: Figure~\ref{TF0FiniteIIV} shows the situation with the 
 cursor hovering over the {\smalltt{d\_garfield}} node on the path from {\smalltt{owns}} to 
