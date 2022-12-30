@@ -347,10 +347,16 @@ In order to separate nodes for different kinds of terms into different layers, a
 term is added to the source field of each derivation annotated formula, which is used by IDV only
 when rendering interpretations.
 
-An ANTLR parser is used read the extracted annotated formulae, and JavaScript is used to convert
-the resultant data structure into GraphViz \cite{EG+02} specifications.
-The GraphViz specification is rendered in the browser by 
-WHAT MAGIC SOME HTML HERE? JACK, HELP. PLEASE CHECK, CORRECT, EXPAND.
+% An ANTLR parser is used to read the extracted annotated formulae, and JavaScript is used to convert
+% the resultant data structure into GraphViz \cite{EG+02} specifications.
+% The GraphViz specification is rendered in the browser by 
+% WHAT MAGIC SOME HTML HERE? JACK, HELP. PLEASE CHECK, CORRECT, EXPAND.
+
+
+ANTLR is used to generate a JavaScript parser for the TPTP language.
+This parser is then used in the browser, along with custom JavaScript, to create a graph in the GraphViz {\em DOT} language from an input TPTP file (in this case representing an interpretation).
+The resulting DOT text is then rendered using the ``d3-graphviz'' \footnote{https://github.com/magjac/d3-graphviz} library which uses WebAssembly for speed.
+
 
 % \begin{packed_itemize}
 % \item each problem type is extracted into a {\smalltt{fof}} annotated formula with the role 
