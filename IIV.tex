@@ -42,7 +42,7 @@
 
 \begin{document}
 
-\title{The Interactive Interpretation Viewer}
+\title{An Interactive Interpretation Viewer for Typed First-order Logic}
 \author{Anon One\\
 Some where\\
 Some place\\
@@ -56,20 +56,19 @@ Some country}
 \maketitle
 % \begin{abstract}
 % \begin{quote}
-% This poster describes the Interactive Interpretation Viewer - IIV, for interpretations of
-% typed first order formulae, written in the (new) TPTP format for interpretations.
+% This poster describes the Interactive Interpretation Viewer - IIV, for finite interpretations 
+% in typed first-order logic written in the (new) TPTP format for interpretations.
 % \end{quote}
 % \end{abstract}
 %--------------------------------------------------------------------------------------------------
 \section{Introduction}
 \label{Introduction}
 
-Historically, Automated Reasoning (AR), and Automated Theorem Proving (ATP) in particular, has 
-focused largely on the task of proving theorems from axioms -- the derivation of conclusions that 
-follow inevitably from known facts \cite{RV01-HAR}.
+Historically, Automated Theorem Proving (ATP) has, as the name suggests, focused largely on the 
+task of proving theorems from axioms -- the derivation of conclusions that follow inevitably from 
+known facts \cite{RV01-HAR}.
 The axioms and conjecture to be proved (to become a theorem) are written in an 
 appropriately expressive logic, and the proofs are often similarly written in logic \cite{SS+06}.
-In this work typed first-order logic is used.
 In the last two decades the converse task of disproving conjectures has become increasingly 
 important.
 This is achieved by finding an {\em interpretation} -- a structure that maps terms to domain 
@@ -81,8 +80,9 @@ elements and formulae to truth values, that is a {\em model} of the axioms -- it
 A salient application area that harnesses this form of ATP is verification \cite{DKW08}.
 % where a countermodel is used to pinpoint the reason why a proof obligation fails, and
 % correspondingly points to the location of the fault in the system being verified.
-This work describes an interactive interpretation viewer for interpretations written in the
-(new) TPTP format \cite{SS+22-FLAIRS}.
+This work describes an interactive interpretation viewer for finite interpretations 
+written in the (new) TPTP format for interpretations \cite{SS+22-FLAIRS}, for formulae in
+typed first-order logic.
 
 % \paragraph{Related Work:}
 % Related work is sparse.
@@ -108,7 +108,7 @@ development, and deployment of ATP systems.
 The TPTP language \cite{Sut22-IGPL} is 
 % one of the keys to the success of the TPTP World.
 % The language is 
-used for writing both problems and solutions.
+used for writing both problems and solutions (derivations and interpretations).
 The top level building blocks of the TPTP language are {\em annotated formulae}.
 An annotated formula has the form:\\
 \hspace*{0.5cm}{\em language}{\tt (}{\em name}{\tt ,}
@@ -137,8 +137,8 @@ $\forall$, $\exists$, $\neg$, $\vee$, $\wedge$, $\Rightarrow$, $\Leftarrow$, $\L
 and $\oplus$ respectively.
 Equality and inequality are expressed as the infix operators {\tt =} and {\tt !=}.
 The {\em source} and {\em useful\_info} are optional.
-Figure~\ref{TF0FiniteProblem} is an example of a problem in monomorphic typed first-order
-form (TF0).  
+Figure~\ref{TF0FiniteProblem} is an example of a problem (not a theorem!) in monomorphic 
+typed first-order form (TF0).  
 % The associated (counter)model is discussed in Section~\ref{Interpretations}.
 
 \begin{figure}[htbp]
@@ -181,12 +181,10 @@ tff(jon_owns_garfields_lovers,conjecture,
 \label{Interpretations}
 
 A Tarskian-style interpretation \cite{TV56} of formulae in typed first-order logic consists of a 
-non-empty domain of unequal elements for each type in the formulae (just one domain for 
-untyped logic), and interpretations of the function and predicate symbols with respect to the 
-domains \cite{Hun96}.
+non-empty domain of unequal elements for each type (just one domain for untyped logic), and 
+interpretations of the function and predicate symbols with respect to the domains \cite{Hun96}.
 Interpretations with only finite domains are called {\em finite interpretations}, and
 interpretations with one of more infinite domains are called {\em infinite interpretations}.
-The domains of an interpretation may be finite or infinite
 Finite domains are commonly explicitly enumerated, but can also take other forms, e.g., the 
 finite Herbrand Universe of a Herbrand interpretation \cite{Her30}.
 This work deals with only enumerated finite domains.
@@ -225,11 +223,9 @@ interpretation formula well-typed.
 %       to type-promoted domain elements; positive literals are {\em true} and negative literals 
 %       are {\em false}.
 % \end{packed_itemize}
-The representation is also directly usable for untyped first-order logic, where all terms 
-in both the given and interpretation formulae 
-are of the same type -- ``individuals''. 
-This obviates the need for type considerations, in particular type-promotion functions are not 
-needed.
+The representation is also usable for untyped first-order logic, where all terms in both the 
+given and interpretation formulae are of the same type -- ``individuals''., which obviates the 
+need for type considerations, in particular type-promotion functions are not needed.
  
 Figure~\ref{TF0FiniteInterpretation} is a TF0 interpretation with finite domains -- it is a 
 countermodel for the problem in Figure~\ref{TF0FiniteProblem}.
@@ -274,13 +270,15 @@ tff(equality_lost,interpretation,
 \label{Visualization}
 
 Proof visualization is well-established, with several tools available, including the Interactive 
-Derivation Viewer (IDV) \cite{TPS07} -- a tool for visualizing TPTP format proofs.
+Derivation Viewer (IDV) -- a tool for visualizing TPTP format proofs \cite{TPS07}.
 Interpretation visualization, however, has (to the knowledge of the authors) had minimal 
-attention.
+attention, with \cite{Sch13-MS} being the only tool found (past tense -- it is no longer
+available).
 Visualization of interpretations is useful in areas such as teaching logic, debugging ATP 
 systems, and understanding of a model.
 A visualization for TF0 interpretations has been designed in this work, and an initial
-implementation is available as the IIV tool in the SystemOnTSTP web interface.
+implementation is available as the IIV tool in the SystemOnTSTP web interface\footnote{%
+\url{https://www.tptp.org/cgi-bin/SystemOnTSTP}}.
 % The implementation is ``initial'' because it is fully automated only for finite TF0 and untyped
 % logic interpretations.
 % ; for infinite interpretations different components of the interpretation formula 
@@ -289,7 +287,7 @@ implementation is available as the IIV tool in the SystemOnTSTP web interface.
 
 Figure~\ref{TF0FiniteIIV} is the visualization of the interpretation in 
 Figure~\ref{TF0FiniteInterpretation}.
-The top row of inverted triangles are the types in the given formulae,
+The top row of inverted triangles are the types in the problem formulae,
 while the bottom row of inverted triangles are the types of the domains in the interpretation
 formula.
 The inverted houses are the function and predicate symbols, and the successive rows of ovals are 
@@ -307,7 +305,7 @@ and {\smalltt{loves\_most(d\_arlene)}} is interpreted as {\smalltt{d\_garfield}}
 
 IIV provides some interactive features: Figure~\ref{TF0FiniteIIV} shows the situation with the 
 cursor hovering over the {\smalltt{d\_garfield}} node on the path from {\smalltt{owns}} to 
-{\smalltt{\$true}}, showing that {\smalltt{own(d\_jon,d\_garfield`)}} is interpreted as 
+{\smalltt{\$true}}, showing that {\smalltt{owns(d\_jon,d\_garfield)}} is interpreted as 
 {\smalltt{\$true}}.
 The nodes above are increasingly darker red (grey if printed) up to the type node {\smalltt{\$o}} 
 that is the result type of {\smalltt{owns}}, and increasingly darker blue down to the type node 
@@ -317,9 +315,8 @@ to highlight what symbol applications are interpreted as {\smalltt{\$true}} or {
 by hovering over the corresponding truth value node, or how a specific function symbol is 
 interpreted, e.g, by hovering over the {\smalltt{loves\_most}} node.
 
-This visualization is available in IIV using the URL provided for the interpretation
-% {\smalltt{\url{https://raw.githubusercontent.com/GeoffsPapers/ModelVerification/main/TFF_Finite.s}}}
-as the ``URL to fetch from'',
+This visualization is available in IIV using the URL provided with 
+Figure~\ref{TF0FiniteInterpretation} as the ``URL to fetch from'',
 selecting {\tt IIV 0.0} as the ``System'', and clicking the ``Process Solution'' button.
 
 \begin{figure}[htbp]
@@ -336,27 +333,34 @@ selecting {\tt IIV 0.0} as the ``System'', and clicking the ``Process Solution''
 IIV is implemented on top of IDV, and has benefited from the mature state of IDV.
 Different terms in an interpretation, e.g., problem types, problem symbols, domain elements,
 domain types, are extracted into annotated formulae with different languages and roles that
-IDV renders differently, e.g., problem symbols are extracted into annotated formulae with
-the language {\smalltt{thf}} and the role {\smalltt{negated\_conjecture}}, which IDV renders 
-as inverted houses with a blue outline.
-A ``derivation'' is formed by setting the ``inference'' parents of each node appropriately,
-which IDV renders as the directed links between nodes.
-A Prolog program is used to extract the components of the interpretation formulae into 
-the separate derivation annotated formulae.
+IDV renders differently: 
+types are extracted into {\smalltt{fof}} annotated formulae with the role {\smalltt{axiom}}
+that are rendered as inverted triangles with a green outline;
+problem symbols are extracted into {\smalltt{thf}} {\smalltt{negated\_conjecture}}s
+that are rendered as inverted houses with a blue outline;
+domain element arguments for problem symbols are extracted into {\smalltt{tcf}} {\smalltt{plain}}s
+that are rendered as ellipses with a grey outline;
+domain element interpretations for function symbols are extracted into {\smalltt{tcf}}
+{\smalltt{conjecture}}s that are rendered as houses with a grey outline;
+truth value interpretations for predicate symbols are extracted into {\smalltt{tcf}}
+{\smalltt{conjecture}}s that are rendered as boxes (as a special case) with a grey outline.
+A ``derivation'' is formed by setting the ``inference'' parents of each node appropriately.
+%  e.g., problem symbols are extracted into annotated formulae with
+% the language {\smalltt{thf}} and the role {\smalltt{negated\_conjecture}}, which IDV renders 
+% as inverted houses with a blue outline.
+% which IDV renders as the directed links between nodes.
 In order to separate nodes for different kinds of terms into different layers, a {\smalltt{level}}
 term is added to the source field of each derivation annotated formula, which is used by IDV only
 when rendering interpretations.
 
-% An ANTLR parser is used to read the extracted annotated formulae, and JavaScript is used to convert
-% the resultant data structure into GraphViz \cite{EG+02} specifications.
-% The GraphViz specification is rendered in the browser by 
-% WHAT MAGIC SOME HTML HERE? JACK, HELP. PLEASE CHECK, CORRECT, EXPAND.
-
-
+A Prolog program is used to extract the components of the interpretation formulae into 
+the separate derivation annotated formulae.
 ANTLR is used to generate a JavaScript parser for the TPTP language.
-This parser is then used in the browser, along with custom JavaScript, to create a graph in the GraphViz {\em DOT} language from an input TPTP file (in this case representing an interpretation).
-The resulting DOT text is then rendered using the ``d3-graphviz'' \footnote{https://github.com/magjac/d3-graphviz} library which uses WebAssembly for speed.
-
+The parser is used in the browser, along with custom JavaScript, to create a graph in 
+the Graphviz DOT language \cite{EG+02} from the TPTP input (in this case, representing an 
+interpretation).
+The resulting DOT text is then rendered using the ``d3-graphviz''\footnote{%
+\url{https://github.com/magjac/d3-graphviz}} library, which uses WebAssembly for speed.
 
 % \begin{packed_itemize}
 % \item each problem type is extracted into a {\smalltt{fof}} annotated formula with the role 
