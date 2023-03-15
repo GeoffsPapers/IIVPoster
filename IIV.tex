@@ -158,9 +158,6 @@ tff(owns_decl,type,       owns: ( human * cat ) > $o ).
 tff(garfield_not_arlene,axiom,
     $distinct(garfield,arlene,nermal) ).
 
-tff(only_jon,axiom,
-    ! [H: human] : H = jon ).
-
 tff(jon_owns_garfield_not_arlene,axiom,
     ( owns(jon,garfield) & ~ owns(jon,arlene) ) ).
 
