@@ -151,21 +151,26 @@ tff(cat_type,type,        cat: $tType ).
 tff(jon_decl,type,        jon: human ).
 tff(garfield_decl,type,   garfield: cat ).
 tff(arlene_decl,type,     arlene: cat ).
+tff(nermal_decl,type,     nermal: cat ).
 tff(loves_decl,type,      loves: cat > cat ).
 tff(owns_decl,type,       owns: ( human * cat ) > $o ).
 
 tff(garfield_not_arlene,axiom,
-    garfield != arlene ).
+    $distinct(garfield,arlene,nermal) ).
 
-tff(jon_owns_only_garfield,axiom,
+tff(only_jon,axiom,
+    ! [H: human] : H = jon ).
+
+tff(jon_owns_garfield_not_arlene,axiom,
     ( owns(jon,garfield) & ~ owns(jon,arlene) ) ).
 
 tff(all_cats_love_garfield,axiom,
     ! [C: cat] : ( loves(C) = garfield ) ).
 
 tff(jon_owns_garfields_lovers,conjecture,
-    ! [C: cat] : 
-      ( ( loves(C) = garfield ) => owns(jon,C) ) ).
+    ! [C: cat] :
+      ( ( loves(C) = garfield & C != arlene ) 
+     => owns(jon,C) ) ).
 %--------------------------------------------------------
 \end{verbatim}
 \caption{A TF0 problem
@@ -182,7 +187,8 @@ tff(jon_owns_garfields_lovers,conjecture,
 
 A Tarskian-style interpretation \cite{TV56} of formulae in typed first-order logic consists of a 
 non-empty domain of unequal elements for each type (just one domain for untyped logic), and 
-interpretations of the function and predicate symbols with respect to the domains \cite{Hun96}.
+interpretations of the function and predicate symbols with respect to the domains 
+\cite{Gal15}.
 Interpretations with only finite domains are called {\em finite interpretations}, and
 interpretations with one of more infinite domains are called {\em infinite interpretations}.
 Finite domains are commonly explicitly enumerated, but can also take other forms, e.g., the 
@@ -238,7 +244,7 @@ The type declarations have been omitted, and can be found in the URL provided.
 \setstretch{0.8}
 \begin{verbatim}
 %--------------------------------------------------------
-tff(equality_lost,interpretation,
+tff(garfield,interpretation,
 %----The domain for human
     ( ( ! [H: human] : ? [DH: d_human] : H = d2human(DH)
       & ! [DH: d_human] : ( DH = d_jon )
@@ -247,17 +253,20 @@ tff(equality_lost,interpretation,
 %----The domain for cat
       & ! [C: cat] : ? [DC: d_cat] : C = d2cat(DC)
       & ! [DC: d_cat]: ( DC = d_garfield | DC = d_arlene )
-      & $distinct(d_garfield,d_arlene)
+      & $distinct(d_garfield,d_arlene,d_nermal)
       & ! [DC1: d_cat,DC2: d_cat] :
           ( d2cat(DC1) = d2cat(DC2) => DC1 = DC2 ) )
 %----Interpret terms and atoms
     & ( jon = d2human(d_jon)
       & garfield = d2cat(d_garfield)
       & arlene = d2cat(d_arlene)
+      & nermal = d2cat(d_nermal)
       & loves(d2cat(d_garfield)) = d2cat(d_garfield)
-      & loves(d2cat(d_arlene)) = d2cat(d_garfield) )
+      & loves(d2cat(d_arlene)) = d2cat(d_garfield)
+      & loves(d2cat(d_nermal)) = d2cat(d_garfield) )
     & ( owns(d2human(d_jon),d2cat(d_garfield))
-      & ~ owns(d2human(d_jon),d2cat(d_arlene)) ) ) ).
+      & ~ owns(d2human(d_jon),d2cat(d_arlene))
+      & ~ owns(d2human(d_jon),d2cat(d_nermal)) ) ) ).
 %--------------------------------------------------------
 \end{verbatim}
 \caption{A TF0 countermodel for the problem in Figure~\ref{TF0FiniteProblem} \\
@@ -275,9 +284,10 @@ Interpretation visualization, however, has (to the knowledge of the authors) had
 attention, with \cite{Sch13-MS} being the only tool found (past tense -- it is no longer
 available).
 Visualization of interpretations is useful in areas such as teaching logic, debugging ATP 
-systems, and understanding of a model.
-A visualization for TF0 interpretations has been designed in this work, and an initial
-implementation is available as the IIV tool in the SystemOnTSTP web interface\footnote{%
+systems, and understanding a model.
+A visualization for TF0 interpretations has been designed in this work,
+% and the initial implementation 
+and it is available as the IIV tool in the SystemOnTSTP web interface\footnote{%
 \url{https://www.tptp.org/cgi-bin/SystemOnTSTP}}.
 % The implementation is ``initial'' because it is fully automated only for finite TF0 and untyped
 % logic interpretations.
@@ -291,13 +301,13 @@ The top row of inverted triangles are the types in the problem formulae,
 while the bottom row of inverted triangles are the types of the domains in the interpretation
 formula.
 The inverted houses are the function and predicate symbols, and the successive rows of ovals are 
-the successive domain element arguments used in the specification of the symbols' interpretations.
+the successive domain element arguments used in the symbols' interpretations.
 Finally, the row of houses and boxes are the interpretations of the symbols applied to those
 arguments; houses for functions and boxes for predicates.
-Paths from leaf nodes to root nodes show the interpretations of the symbols applied to the 
+Paths from leaf to root nodes show the interpretations of the symbols applied to the 
 domain elements.
-For example, in the given formulae the type of {\smalltt{loves\_most}} is {\smalltt{cat}},
-and {\smalltt{loves\_most(d\_arlene)}} is interpreted as {\smalltt{d\_garfield}}, which is of type
+For example, in the given formulae the type of {\smalltt{loves}} is {\smalltt{cat}},
+and {\smalltt{loves(d\_arlene)}} is interpreted as {\smalltt{d\_garfield}}, which is of type
 {\smalltt{d\_cat}} in the interpretation formula.
 % Similarly, in the given formulae the type of {\smalltt{owns}} is {\smalltt{\$o}}, and
 % {\smalltt{owns(d\_jon,d\_garfield)}} is interpreted as {\smalltt{\$true}}, which is of type
@@ -313,7 +323,7 @@ that is the result type of {\smalltt{owns}}, and increasingly darker blue down t
 This highlighting provides easy focus on the interpretations of chosen symbols, e.g., it is easy
 to highlight what symbol applications are interpreted as {\smalltt{\$true}} or {\smalltt{\$false}}
 by hovering over the corresponding truth value node, or how a specific function symbol is 
-interpreted, e.g, by hovering over the {\smalltt{loves\_most}} node.
+interpreted, e.g, by hovering over the {\smalltt{loves}} node.
 
 This visualization is available in IIV using the URL provided with 
 Figure~\ref{TF0FiniteInterpretation} as the ``URL to fetch from'',
